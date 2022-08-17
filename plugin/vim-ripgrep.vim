@@ -3,6 +3,7 @@ if exists('g:loaded_rg') || &cp
 endif
 
 let g:loaded_rg = 1
+
 let g:MyRoot = getcwd()
 
 if !exists('g:rg_binary')
@@ -34,13 +35,9 @@ fun! s:Rg(txt)
 endfun
 
 fun! s:Mg(txt)
-  call s:MgGrepContext(function('s:RgSearch'), s:RgSearchTerm(a:txt))
+  call s:RgGrepContextM(function('s:RgSearch'), s:RgSearchTerm(a:txt))
 endfun
 
-
-fun! s:Mgb(txt)
-  call s:MgGrepContext(function('s:RgSearch'), s:RgSearchTermB(a:txt))
-endfun
 
 fun! s:RgGetVisualSelection()
     " Why is this not a built-in Vim script function?!
@@ -60,14 +57,6 @@ fun! s:RgSearchTerm(txt)
     return expand("<cword>")
   else
     return a:txt
-  endif
-endfun
-
-fun! s:RgSearchTermB(txt)
-  if empty(a:txt)
-    return expand("<cword>")
-  else
-    return '\b'.a:txt.'\b'
   endif
 endfun
 
@@ -120,7 +109,7 @@ fun! s:RgGrepContext(search, txt)
   let &grepformat = l:grepformatb
 endfun
 
-fun! s:MgGrepContext(search, txt)
+fun! s:RgGrepContextM(search, txt)
   let l:grepprgb = &grepprg
   let l:grepformatb = &grepformat
   let &grepprg = g:rg_command
@@ -134,7 +123,7 @@ fun! s:MgGrepContext(search, txt)
     let &shellpipe="&>"
   endif
 
-  call s:MyRgPathContext(g:MyRoot, a:search, a:txt)
+  call s:RgPathContextM(a:search, a:txt)
 
   let &shellpipe=l:shellpipe_bak
   let &t_te=l:te
@@ -151,12 +140,13 @@ fun! s:RgPathContext(search, txt)
   exe 'lcd '.l:cwdb
 endfun
 
-fun! s:MyRgPathContext(MyPath, search, txt)
+fun! s:RgPathContextM(search, txt)
   let l:cwdb = getcwd()
-  exe 'lcd '. a:MyPath
+  exe 'lcd '.g:MyRoot
   call a:search(a:txt)
   exe 'lcd '.l:cwdb
 endfun
+
 
 fun! s:RgHighlight(txt)
   let @/=escape(substitute(a:txt, '"', '', 'g'), '|')
@@ -194,18 +184,6 @@ fun! s:RgShowRoot()
   endif
 endfun
 
-fun! s:ShowMyRoot()
-	echo g:MyRoot 
-endfun
-
-fun! s:SetMyRoot()
-	let g:MyRoot = expand("%:p:h")
-	echo g:MyRoot 
-endfun
-
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 command! -nargs=* -complete=file Mg :call s:Mg(<q-args>)
-command! -nargs=* -complete=file Mgb :call s:Mgb(<q-args>)
 command! RgRoot :call s:RgShowRoot()
-command! MyRoot :call s:ShowMyRoot()
-command! SetMyRoot :call s:SetMyRoot()
