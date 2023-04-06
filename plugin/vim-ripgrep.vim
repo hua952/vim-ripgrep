@@ -38,6 +38,9 @@ fun! s:Mg(txt)
   call s:RgGrepContextM(function('s:RgSearch'), s:RgSearchTerm(a:txt))
 endfun
 
+fun! s:Mb(txt)
+  call s:RgGrepContextM(function('s:RgSearch'), s:RgSearchTermB(a:txt))
+endfun
 
 fun! s:RgGetVisualSelection()
     " Why is this not a built-in Vim script function?!
@@ -59,6 +62,15 @@ fun! s:RgSearchTerm(txt)
     return a:txt
   endif
 endfun
+
+fun! s:RgSearchTermB(txt)
+  if empty(a:txt)
+    return '\b'.expand("<cword>").'\b'
+  else
+    return '\b'.a:txt.'\b'
+  endif
+endfun
+
 
 fun! s:RgSearch(txt)
   let l:rgopts = ' '
@@ -186,4 +198,5 @@ endfun
 
 command! -nargs=* -complete=file Rg :call s:Rg(<q-args>)
 command! -nargs=* -complete=file Mg :call s:Mg(<q-args>)
+command! -nargs=* -complete=file Mb :call s:Mb(<q-args>)
 command! RgRoot :call s:RgShowRoot()
