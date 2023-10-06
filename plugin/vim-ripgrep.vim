@@ -4,7 +4,7 @@ endif
 
 let g:loaded_rg = 1
 
-let g:MyRoot = getcwd()
+let t:MyRoot = getcwd()
 
 if !exists('g:rg_binary')
   let g:rg_binary = 'rg'
@@ -154,7 +154,7 @@ endfun
 
 fun! s:RgPathContextM(search, txt)
   let l:cwdb = getcwd()
-  exe 'lcd '.g:MyRoot
+  exe 'lcd '.t:MyRoot
   call a:search(a:txt)
   exe 'lcd '.l:cwdb
 endfun
