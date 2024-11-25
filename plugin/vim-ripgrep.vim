@@ -65,9 +65,9 @@ endfun
 
 fun! s:RgSearchTermB(txt)
   if empty(a:txt)
-    return '\b'.expand("<cword>").'\b'
+    return '"\b'.expand("<cword>").'\b"'
   else
-    return '\b'.a:txt.'\b'
+    return '"\b'.a:txt.'\b"'
   endif
 endfun
 
